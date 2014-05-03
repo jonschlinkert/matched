@@ -18,9 +18,9 @@ function getMatches(arr, pattern, options) {
   var a = [], b = [];
   if (/^!/.test(pattern)) {
     var ptn = pattern.replace('!', '');
-    a = a.concat(minimatch.match(arr, ptn, options));
+    a = minimatch.match(arr, ptn, options);
   } else {
-    b = b.concat(minimatch.match(arr, pattern, options));
+    b = minimatch.match(arr, pattern, options);
   }
   return {exclude: a, include: b};
 }
