@@ -13,7 +13,7 @@ globule.match(['foo', 'bar', 'baz'], '!foo')).to.eql([]);
 matched(['foo', 'bar', 'baz'], '!foo')).to.eql([]);
 ```
 
-See [the extensive tests](./test/test.js) for many more examples.
+See [the tests](./test/test.js) for more examples.
 
 
 ## Install
