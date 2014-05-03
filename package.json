@@ -1,0 +1,51 @@
+{
+  "name": "matched",
+  "description": "Extends minimatch with support for multiple patterns. Similar to multimatch, but differs in crucial ways (see readme). Also similar to globule.match but slightly more compact (passes all globule.match tests).",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/matched",
+  "author": {
+    "name": "Jon Schlinkert",
+    "url": "https://github.com/jonschlinkert"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jonschlinkert/matched.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/matched/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/jonschlinkert/matched/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "keywords": [
+    "expand",
+    "find",
+    "glob",
+    "match",
+    "matcher",
+    "matches",
+    "matching",
+    "minimatch",
+    "multimatch",
+    "pattern",
+    "patterns",
+    "wildcard"
+  ],
+  "dependencies": {
+    "lodash": "~2.4.1",
+    "minimatch": "~0.2.14"
+  },
+  "devDependencies": {
+    "chai": "~1.9.1",
+    "mocha": "~1.18.2",
+    "multimatch": "~0.1.0",
+    "globule": "~0.2.0"
+  }
+}
