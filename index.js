@@ -4,6 +4,7 @@
  * Copyright (c) 2014 Jon Schlinkert, contributors.
  * Licensed under the MIT license.
  */
+
 'use strict';
 
 var minimatch = require('minimatch');
@@ -17,14 +18,13 @@ function toArray(val) {
 function getMatches(arr, pattern, options) {
   var a = [], b = [];
   if (/^!/.test(pattern)) {
-    var ptn = pattern.replace('!', '');
-    a = minimatch.match(arr, ptn, options);
+    var negated = pattern.replace('!', '');
+    a = minimatch.match(arr, negated, options);
   } else {
     b = minimatch.match(arr, pattern, options);
   }
-  return {exclude: a, include: b};
+  return {excluded: a, included: b};
 }
-
 
 module.exports = function(arr, patterns, options) {
   var opts = options || {}, include = [];
@@ -34,9 +34,9 @@ module.exports = function(arr, patterns, options) {
   if (!arr.length || !patterns.length) {return [];}
 
   return _.union(_.unique(_(patterns).map(function(pattern) {
-    var m = getMatches(arr, pattern, opts);
+    var matches = getMatches(arr, pattern, opts);
 
-    include = _.difference(include.concat(m.include), m.exclude);
-    return _.difference(m.include, m.exclude);
+    include = _.difference(include.concat(matches.included), matches.excluded);
+    return _.difference(matches.included, matches.excluded);
   })), include);
 };

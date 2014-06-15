@@ -49,6 +49,7 @@ describe('when an array of additive glob patterns is defined:', function () {
 describe('when additive string patterns are defined and matches are found:', function () {
   it('should return an array of matches', function (done) {
     expect(multimatch(['foo', 'bar', 'baz'], 'foo')).to.eql(['foo']);
+    expect(globMatch(['foo', 'bar', 'baz'], 'foo')).to.eql(['foo']); 
     expect(matched(['foo', 'bar', 'baz'], 'foo')).to.eql(['foo']);
     done();
   });
@@ -99,6 +100,39 @@ describe('when an array of negation glob patterns is defined', function () {
     expect(multimatch(['foo', 'bar', 'baz'], ['!*'])).to.eql([]);
     expect(globMatch(['foo', 'bar', 'baz'], ['!*'])).to.eql([]);
     expect(matched(['foo', 'bar', 'baz'], ['!*'])).to.eql([]);
+    done();
+  });
+});
+
+
+describe('when an array of filepaths is passed, and an array of negation glob patterns is defined', function () {
+	var fixtures = ['vendor/js/foo.js', 'vendor/js/bar.js', 'vendor/js/baz.js'];
+
+  it('should return an array with negations omitted', function (done) {
+    expect(multimatch(fixtures, ['!**/*z.js'])).to.eql(['vendor/js/foo.js', 'vendor/js/bar.js']); // expected?
+    expect(globMatch(fixtures, ['!**/*z.js'])).to.eql([]); // expected?
+    expect(matched(fixtures, ['!**/*z.js'])).to.eql([]); // expected?
+    done();
+  });
+
+  it('should return an array with negations omitted', function (done) {
+    expect(multimatch(fixtures, ['!**/*z.js', '**/foo.js'])).to.eql(['vendor/js/foo.js', 'vendor/js/bar.js']); // expected?
+    expect(globMatch(fixtures, ['!**/*z.js', '**/foo.js'])).to.eql(['vendor/js/foo.js']); // expected?
+    expect(matched(fixtures, ['!**/*z.js', '**/foo.js'])).to.eql(['vendor/js/foo.js']); // expected?
+    done();
+  });
+
+  it('should return an array with negations omitted', function (done) {
+    expect(multimatch(fixtures, ['!**/*z.js', '!**/*a*.js'])).to.eql(['vendor/js/foo.js']); // expected?
+    expect(globMatch(fixtures, ['!**/*z.js', '!**/*a*.js'])).to.eql([]); // expected?
+    expect(matched(fixtures, ['!**/*z.js', '!**/*a*.js'])).to.eql([]); // expected?
+    done();
+  });
+
+  it('should return an empty array when no matches are found', function (done) {
+    expect(multimatch(fixtures, ['!**/*.js'])).to.eql([]);
+    expect(globMatch(fixtures, ['!**/*.js'])).to.eql([]);
+    expect(matched(fixtures, ['!**/*.js'])).to.eql([]);
     done();
   });
 });
@@ -370,7 +404,7 @@ describe('globule', function () {
 
   describe('flatten:', function () {
     it('should process nested pattern / filepaths arrays correctly', function (done) {
-    // expect(multimatch([['foo.js', ['bar.css']]], [['*.js', '*.css'], ['*.*', '*.js']])).to.eql(['foo.js', 'bar.css']); // fails
+    // expect(multimatch([['foo.js', ['bar.css']]], [['*.js', '*.css'], ['*.*', '*.js']])).to.eql(['foo.js', 'bar.css']); // multimatch fails
     expect(globMatch([['foo.js', ['bar.css']]], [['*.js', '*.css'], ['*.*', '*.js']])).to.eql(['foo.js', 'bar.css']);
     expect(matched([['foo.js', ['bar.css']]], [['*.js', '*.css'], ['*.*', '*.js']])).to.eql(['foo.js', 'bar.css']);
       done();
