@@ -2,7 +2,7 @@
 
 > Super fast globbing library.
 
-#### [Why?](#why-1)
+#### [Why?](#why-i-created-this)
 
 ## Install
 Install with [npm](npmjs.org):
@@ -82,7 +82,7 @@ Just a quick overview.
 
 See [multimatch](https://github.com/sindresorhus/multimatch) if you need to match against a list instead of the filesystem.
 
-## Why?
+## Why I created this
 
 **Problem**
 
