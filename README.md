@@ -32,7 +32,7 @@ matched('**/*.js');
 matched(patterns, options)
 ```
 
-See supported [globby](https//github.com/sindresorhus/globby) options.
+See supported [globby](https://github.com/sindresorhus/globby) options.
 
 
 ### patterns
@@ -55,7 +55,7 @@ Type: `array`
 
 Default: `['.git', 'node_modules', 'temp', 'tmp']`
 
-Pass an array of additional directories to exlude:
+Pass an array of additional directories to exclude:
 
 ```js
 matched(['**/*.js'], {omit: ['vendor']});
