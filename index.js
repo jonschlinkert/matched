@@ -44,6 +44,10 @@ var base = function(options) {
   return normalize(filepath);
 };
 
+var arrayify = function(arr) {
+  return !Array.isArray(arr) ? [arr] : arr;
+};
+
 
 /**
  * ## filterDirs
@@ -65,7 +69,7 @@ var filterDirs = function(options) {
 
   // Omit folders from root directory
   var rootOmit = ['.git', 'node_modules', 'temp', 'tmp'];
-  var rootDirs = _.union(rootOmit, options.omit);
+  var rootDirs = _.union(rootOmit, arrayify(options.omit || []));
   return _.difference(dirs, rootDirs.map(resolve(cwd)));
 };
 
@@ -87,8 +91,7 @@ module.exports = function matched(patterns, options) {
   var cwd = base(options);
   var opts;
 
-  patterns = !Array.isArray(patterns) ? [patterns] : patterns;
-  var p = splitPatterns(patterns);
+  var p = splitPatterns(arrayify(patterns));
 
   return unique(flatten(filterDirs(options).reduce(function (acc, start) {
     var normalized = p.map(function (pattern) {
