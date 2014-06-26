@@ -22,16 +22,40 @@ var log = function(arr) {
 };
 
 describe('when a cwd is used:', function () {
-  it('should return correct file paths.', function () {
-    var actual = matched(['{,*/}/*.md', '**/*.md'], {cwd: 'test'});
-    console.log(actual)
-
+  it('should only return file paths from the cwd.', function () {
+    var actual = matched(['{,*/}/*.*'], {cwd: 'test'});
     log(actual);
     actual.forEach(function(filepath) {
       expect(exists(filepath)).to.equal(true);
     })
   });
+
+  it('should only return file paths from the cwd.', function () {
+    var actual = matched('*.js', {cwd: 'test'});
+    log(actual);
+    actual.forEach(function(filepath) {
+      expect(exists(filepath)).to.equal(true);
+    })
+  });
+
+  it('should only return file paths from the cwd.', function () {
+    var actual = matched('**/*.js', {cwd: 'test/a'});
+    log(actual);
+    actual.forEach(function(filepath) {
+      expect(exists(filepath)).to.equal(true);
+    })
+  });
+
+  it('should return correct file paths.', function () {
+    var actual = matched(['{,*/}/*.md', '**/*.md'], {cwd: 'test'});
+    log(actual);
+
+    actual.forEach(function(filepath) {
+      expect(exists(filepath)).to.equal(true);
+    })
+  });
 });
+
 describe('when glob patterns are passed:', function () {
   it('should return correct file paths.', function () {
     var actual = matched(['{,*/}/*.md', '**/*.md']);

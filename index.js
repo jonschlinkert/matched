@@ -21,15 +21,6 @@ var _ = require('lodash');
 
 function resolve(cwd) {
   return function(filepath) {
-    // var full = normalize(path.resolve(filepath));
-    // if (full.indexOf(cwd) === -1) {
-    //   var dir = parsePath(filepath).dirname;
-    //   if (/:/.test(dir)) {
-    //     var first = segments(filepath, {first: 1});
-    //     filepath = normalize(filepath.replace(first, ''));
-    //   }
-    //   filepath = path.join(cwd, filepath);
-    // }
     return normalize(path.resolve(cwd, filepath));
   };
 }
@@ -45,7 +36,7 @@ function difference(a, b) {
   return a.filter(function (i) {
     return b.indexOf(i) < 0;
   });
-};
+}
 
 var base = function(options) {
   options = options || {};
@@ -74,7 +65,7 @@ var filterDirs = function(options) {
 
   // Omit folders from root directory
   var rootOmit = ['.git', 'node_modules', 'temp', 'tmp'];
-  var rootDirs = _.union(rootOmit, options.omit)
+  var rootDirs = _.union(rootOmit, options.omit);
   return _.difference(dirs, rootDirs.map(resolve(cwd)));
 };
 
@@ -99,19 +90,20 @@ module.exports = function matched(patterns, options) {
   patterns = !Array.isArray(patterns) ? [patterns] : patterns;
   var p = splitPatterns(patterns);
 
-  var res = [];
   return unique(flatten(filterDirs(options).reduce(function (acc, start) {
     var normalized = p.map(function (pattern) {
-      pattern = normalize(path.join(start, pattern));
       var dir = start;
-
       if (!/\*\*\//.test(pattern)) {
         start = cwd;
+      }
+      if (/\{,/.test(pattern)) {
+        start = normalize(path.resolve(options.cwd || start));
       }
 
       opts = _.extend({}, options, {
         pattern: pattern,
-        cwd: start
+        cwd: start,
+        root: start
       });
 
       // reset cwd;
@@ -119,11 +111,10 @@ module.exports = function matched(patterns, options) {
       return opts;
     });
 
-    normalized.forEach(function(obj) {
-      opts = _.extend({}, {cwd: obj.cwd, srcBase: obj.srcBase});
+    return normalized.map(function(obj) {
+      opts = _.extend({}, {cwd: obj.cwd, srcBase: obj.srcBase, root: obj.root});
       var result = glob.sync(obj.pattern, opts);
-      res = res.concat(result.map(resolve(opts.cwd)));
+      return result.map(resolve(opts.cwd));
     });
-    return res;
   }, [])));
 };
