@@ -2,6 +2,7 @@
 
 > Super fast globbing library.
 
+#### [Why?](#why)
 
 ## Install
 Install with [npm](npmjs.org):
@@ -9,7 +10,6 @@ Install with [npm](npmjs.org):
 ```bash
 npm i matched --save-dev
 ```
-
 
 ## Usage
 
@@ -20,12 +20,6 @@ npm i matched --save-dev
 └── test/test.js
 ```
 
-```js
-var matched = require('matched');
-matched('**/*.js');
-//=> ['index.js', 'test/test.js']
-```
-
 ## API
 
 ```js
@@ -33,7 +27,6 @@ matched(patterns, options)
 ```
 
 See supported [globby](https://github.com/sindresorhus/globby) options.
-
 
 ### patterns
 
@@ -89,13 +82,37 @@ Just a quick overview.
 
 See [multimatch](https://github.com/sindresorhus/multimatch) if you need to match against a list instead of the filesystem.
 
+## Why?
+
+**Problem**
+
+Let's say you want to return all of the `.js` files in a project, excluding `node_modules` and a few other similar directories. Normally you would need to do something like this:
+
+```js
+glob(['**/*.js', '!**/node_modules/**']);
+```
+
+The problem with this approach is that typically _even the excluded file paths are fully expanded before the result set is returned_. e.g. all of the files in `node_modules` would be scanned first.
+
+**Solution**
+
+Matched allows you to exlude directories before they reach [globby](https://github.com/sindresorhus/globby). In a nutshell, matched uses `fs.readdirSync` to build up a list of directories relative to the `cwd`, then for each (non-excluded) directory matched passes the glob pattern to globby. The following is all that's needed to return all of the `.js` files in a project.
+
+```js
+var matched = require('matched');
+matched('**/*.js');
+//=> ['index.js', 'test/test.js']
+```
+
+Try it, you'll be surprised how fast it is comparatively. However, I'm not sure how well this approach will scale with complicated patterns. See [the tests](./test/test.js) for the use cases that are covered so far. Feel free to create pull requests or issues if you have suggestions for improvement.
+
 
 ## Author
 
 **Jon Schlinkert**
-
+ 
 + [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
++ [twitter/jonschlinkert](http://twitter.com/jonschlinkert) 
 
 ## License
 Copyright (c) 2014 Jon Schlinkert, contributors.  
