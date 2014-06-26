@@ -2,7 +2,7 @@
 
 > Super fast globbing library.
 
-#### [Why?](#why)
+#### [Why?](#why-1)
 
 ## Install
 Install with [npm](npmjs.org):
