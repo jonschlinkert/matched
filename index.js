@@ -12,11 +12,13 @@ var path = require('path');
 var root = require('find-root');
 var glob = require('globby');
 var flatten = require('array-flatten');
+var differ = require('array-differ');
+var union = require('array-union');
 var unique = require('array-uniq');
 var normalize = require('normalize-path');
 var segments = require('path-segments');
 var parsePath = require('parse-filepath');
-var _ = require('lodash');
+var extend = require('xtend');
 
 
 function resolve(cwd) {
@@ -30,12 +32,6 @@ function listDirs(cwd) {
     filepath = path.join(cwd, filepath);
     return fs.statSync(filepath).isDirectory();
   }).map(resolve(cwd));
-}
-
-function difference(a, b) {
-  return a.filter(function (i) {
-    return b.indexOf(i) < 0;
-  });
 }
 
 var base = function(options) {
@@ -69,8 +65,8 @@ var filterDirs = function(options) {
 
   // Omit folders from root directory
   var rootOmit = ['.git', 'node_modules', 'temp', 'tmp'];
-  var rootDirs = _.union(rootOmit, arrayify(options.omit || []));
-  return _.difference(dirs, rootDirs.map(resolve(cwd)));
+  var rootDirs = union(rootOmit, arrayify(options.omit || []));
+  return differ(dirs, rootDirs.map(resolve(cwd)));
 };
 
 var splitPatterns = function(patterns) {
@@ -103,7 +99,7 @@ module.exports = function matched(patterns, options) {
         start = normalize(path.resolve(options.cwd || start));
       }
 
-      opts = _.extend({}, options, {
+      opts = extend({}, options, {
         pattern: pattern,
         cwd: start,
         root: start
@@ -115,7 +111,7 @@ module.exports = function matched(patterns, options) {
     });
 
     return normalized.map(function(obj) {
-      opts = _.extend({}, {cwd: obj.cwd, srcBase: obj.srcBase, root: obj.root});
+      opts = extend({}, {cwd: obj.cwd, srcBase: obj.srcBase, root: obj.root});
       var result = glob.sync(obj.pattern, opts);
       return result.map(resolve(opts.cwd));
     });

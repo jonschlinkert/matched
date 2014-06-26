@@ -1,7 +1,7 @@
 {
   "name": "matched",
   "description": "Super fast globbing library.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/jonschlinkert/matched",
   "author": {
     "name": "Jon Schlinkert",
@@ -25,14 +25,16 @@
     "node": ">= 0.10.0"
   },
   "dependencies": {
+    "array-differ": "^0.1.0",
     "array-flatten": "0.0.2",
+    "array-union": "^0.1.0",
     "array-uniq": "^0.1.0",
     "find-root": "^0.1.1",
     "globby": "^0.1.1",
-    "lodash": "^2.4.1",
     "normalize-path": "^0.1.0",
     "parse-filepath": "^0.3.0",
-    "path-segments": "^0.1.1"
+    "path-segments": "^0.1.1",
+    "xtend": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
