@@ -44,4 +44,6 @@ function lookup(dir, exclude) {
 };
 
 
-var files = lookup('./', ['node_modules', 'bin', 'hbs','.js', '.git', 'amet', 'adi']);
+// var files = lookup('./', ['node_modules', 'bin', 'hbs', '.git', 'amet', 'adi']);
+var files = lookup('./', ['verb', 'temp', '.git']);
+console.log(files)
