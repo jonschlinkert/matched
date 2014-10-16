@@ -1,29 +1,7 @@
-/*!
- * matched <https://github.com/jonschlinkert/matched>
- *
- * Copyright (c) 2014 Jon Schlinkert, contributors.
- * Licensed under the MIT License
- */
-
 'use strict';
 
-var assert = require('assert');
-var should = require('should');
-var globby = require('globby');
 var matched = require('./match');
 var mm = require('minimatch');
-
-// describe('matched', function () {
-//   it('should equal', function () {
-//     matched({a: 'b'}).should.eql({a: 'b'});
-//     matched('abc').should.equal('abc');
-//   });
-
-//   it('should have property.', function () {
-//     matched({a: 'b'}).should.have.property('a', 'b');
-//   });
-// });
-
 
 function matches(cwd, exclude, include) {
   var files = matched('./', mm.filter(exclude));

@@ -4,34 +4,31 @@ var fs = require('fs');
 var path = require('path');
 
 
-function dirs(dir, exclude) {
+function dirs(dir, fn) {
   return fs.readdirSync(dir).filter(function (fp) {
-    fp = path.join(dir, fp);
-    return isValid(fp, exclude);
+    return fn(path.join(dir, fp));
   });
 }
 
-function isValid(fp, omit) {
-  omit = Array.isArray(omit) ? omit : [omit];
-  var len = omit.length;
-  for (var i = 0; i < len; i++) {
-    var pattern = new RegExp(omit[i]);
-    if (pattern.test(fp)) {
-      return false;
-    }
-  }
-  return true;
+function isDir(fp) {
+  var stats = fs.statSync(fp);
+  return stats.isDirectory();
 }
 
 
-function lookup(dir, exclude) {
+module.exports = function lookup(dir, fn, recurse) {
   if (!isDir(dir)) return dir;
 
-  return dirs(dir, exclude)
+  return dirs(dir, fn, recurse)
     .reduce(function (acc, fp) {
       fp = path.join(dir, fp);
+
+      if (recurse === false) {
+        return acc.concat(fp);
+      }
+
       if (isDir(fp)) {
-        acc = acc.concat(lookup(fp, exclude));
+        acc = acc.concat(lookup(fp, fn));
       } else {
         acc = acc.concat(fp);
       }
@@ -39,13 +36,3 @@ function lookup(dir, exclude) {
   }, []);
 };
 
-
-// var files = lookup('./', ['node_modules', 'bin', 'hbs', '.git', 'amet', 'adi']);
-var files = lookup('./', ['verb', 'temp', '.git']);
-console.log(files)
-
-
-function isDir(fp) {
-  var stats = fs.statSync(fp);
-  return stats.isDirectory();
-}
