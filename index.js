@@ -23,10 +23,6 @@ function isValid(fp, omit) {
   return true;
 }
 
-function isDir(fp) {
-  var stats = fs.statSync(fp);
-  return stats.isDirectory();
-}
 
 function lookup(dir, exclude) {
   if (!isDir(dir)) return dir;
@@ -47,3 +43,9 @@ function lookup(dir, exclude) {
 // var files = lookup('./', ['node_modules', 'bin', 'hbs', '.git', 'amet', 'adi']);
 var files = lookup('./', ['verb', 'temp', '.git']);
 console.log(files)
+
+
+function isDir(fp) {
+  var stats = fs.statSync(fp);
+  return stats.isDirectory();
+}
