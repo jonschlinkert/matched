@@ -3,9 +3,6 @@
 var matched = require('..');
 var globby = require('globby');
 
-var files = matched('./', function (fp) {
-  return isMatch(fp, ['verb', 'temp', '.git']);
-});
 
 function isMatch(fp, arr) {
   var len = arr.length;
@@ -17,6 +14,11 @@ function isMatch(fp, arr) {
   }
   return true;
 }
+
+
+var files = matched('./', function (fp) {
+  return isMatch(fp, ['verb', 'temp', '.git']);
+});
 
 console.log(files);
 console.log(files.length);
