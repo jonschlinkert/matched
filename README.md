@@ -2,6 +2,12 @@
 
 > Adds array support to node-glob, sync and async. Also supports tilde expansion (user home) and resolving to global npm modules.
 
+**TODO**
+
+* [x] async
+* [x] sync
+* [ ] promise
+
 ## Install
 
 Install with [npm](https://www.npmjs.com/)
