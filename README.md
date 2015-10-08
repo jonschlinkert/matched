@@ -1,126 +1,76 @@
-# matched [![NPM version](https://badge.fury.io/js/matched.png)](http://badge.fury.io/js/matched)
+# matched [![NPM version](https://badge.fury.io/js/matched.svg)](http://badge.fury.io/js/matched)
 
-> Super fast globbing library.
-
-#### [Why?](#why-i-created-this)
+> Adds array support to node-glob, sync and async. Also supports tilde expansion (user home) and resolving to global npm modules.
 
 ## Install
-Install with [npm](npmjs.org):
 
-```bash
-npm i matched --save-dev
+Install with [npm](https://www.npmjs.com/)
+
+```sh
+$ npm i matched --save
 ```
 
 ## Usage
 
-```
-├── node_modules/...
-├── index.js
-├── README.md
-└── test/test.js
+```js
+var glob = require('matched');
 ```
 
-## API
+**async**
 
 ```js
-matched(patterns, options)
+glob(['*.js'], function(err, files) {
+  //=> ['utils.js', 'index.js']
+});
 ```
 
-See supported [globby](https://github.com/sindresorhus/globby) options.
-
-### patterns
-
-*Required*
-
-Type: `string|array`
-
-See [minimatch](https://github.com/isaacs/minimatch#usage) for options and supported patterns.
-
-### options
-
-Type: `object`
-
-#### exclusions
-
-Matched excludes certain directories to speed up search.
-
-Type: `array`
-
-Default: `['.git', 'node_modules', 'temp', 'tmp']`
-
-Pass an array of additional directories to exclude:
+**sync**
 
 ```js
-matched(['**/*.js'], {omit: ['vendor']});
+var files = glob.sync(['*.js']);
+//=> ['utils.js', 'index.js']
 ```
 
-See [node-glob](https://github.com/isaacs/node-glob#properties) for all supported options.
+**options**
 
-
-## Tests
-
-In the command line, run:
-
-```bash
-mocha
-```
-
-## Globbing patterns
-
-Just a quick overview.
-
-- `*` matches any number of characters, but not `/`
-- `?` matches a single character, but not `/`
-- `**` matches any number of characters, including `/`, as long as it's the only thing in a path part
-- `{}` allows for a comma-separated list of "or" expressions
-- `!` at the beginning of a pattern will negate the match
-
-[Various patterns and expected matches](https://github.com/sindresorhus/multimatch/blob/master/test.js).
-
-
-## Related
-
-See [multimatch](https://github.com/sindresorhus/multimatch) if you need to match against a list instead of the filesystem.
-
-## Why I created this
-
-**Problem**
-
-Let's say you want to return all of the `.js` files in a project, excluding `node_modules` and a few other similar directories. Normally you would need to do something like this:
+Both sync and async take options as the second argument:
 
 ```js
-glob(['**/*.js', '!**/node_modules/**']);
+glob(['*.js'], {cwd: 'test'}, function(err, files) {
+  //=> ['test.js']
+});
 ```
 
-The problem with this approach is that typically _even the excluded file paths are fully expanded before the result set is returned_. e.g. all of the files in `node_modules` would be scanned first.
+## Related projects
 
-**Solution**
+* [is-glob](https://www.npmjs.com/package/is-glob): Returns `true` if the given string looks like a glob pattern or an extglob pattern.… [more](https://www.npmjs.com/package/is-glob) | [homepage](https://github.com/jonschlinkert/is-glob)
+* [look-up](https://www.npmjs.com/package/look-up): Faster drop-in replacement for find-up and findup-sync. | [homepage](https://github.com/jonschlinkert/look-up)
+* [micromatch](https://www.npmjs.com/package/micromatch): Glob matching for javascript/node.js. A drop-in replacement and faster alternative to minimatch and multimatch. Just… [more](https://www.npmjs.com/package/micromatch) | [homepage](https://github.com/jonschlinkert/micromatch)
 
-Matched allows you to exlude directories before they reach [globby](https://github.com/sindresorhus/globby). In a nutshell, matched uses `fs.readdirSync` to build up a list of directories relative to the `cwd`, then for each (non-excluded) directory matched passes the glob pattern to globby. The following is all that's needed to return all of the `.js` files in a project.
+## Running tests
 
-```js
-var matched = require('matched');
-matched('**/*.js');
-//=> ['index.js', 'test/test.js']
+Install dev dependencies:
+
+```sh
+$ npm i -d && npm test
 ```
 
-Try it, you'll be surprised how fast it is comparatively. However, I'm not sure how well this approach will scale with complicated patterns. See [the tests](./test/test.js) for the use cases that are covered so far. Feel free to create pull requests or issues if you have suggestions for improvement.
+## Contributing
 
+Pull requests and stars are always welcome. For bugs and feature requests, [please create an issue](https://github.com/jonschlinkert/matched/issues/new).
 
 ## Author
 
 **Jon Schlinkert**
- 
+
 + [github/jonschlinkert](https://github.com/jonschlinkert)
-+ [twitter/jonschlinkert](http://twitter.com/jonschlinkert) 
++ [twitter/jonschlinkert](http://twitter.com/jonschlinkert)
 
 ## License
-Copyright (c) 2014 Jon Schlinkert, contributors.  
-Released under the MIT license
+
+Copyright © 2015 Jon Schlinkert
+Released under the MIT license.
 
 ***
 
-_This file was generated by [verb-cli](https://github.com/assemble/verb-cli) on June 26, 2014._
-
-[globule]: https://github.com/cowboy/node-globule
-[multimatch]: https://github.com/sindresorhus/multimatch
+_This file was generated by [verb-cli](https://github.com/assemble/verb-cli) on October 08, 2015._
