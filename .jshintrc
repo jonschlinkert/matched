@@ -1,21 +1,18 @@
 {
-  "esnext": true,
-  "curly": true,
+  "asi": false,
+  "boss": true,
+  "curly": false,
   "eqeqeq": true,
+  "eqnull": true,
+  "esnext": true,
   "immed": true,
-  "latedef": true,
+  "latedef": false,
+  "laxcomma": false,
+  "mocha": true,
   "newcap": true,
   "noarg": true,
+  "node": true,
   "sub": true,
   "undef": true,
-  "boss": true,
-  "eqnull": true,
-  "node": true,
-  "globals": {
-    "it": true,
-    "describe": true,
-    "module": true,
-    "exports": true,
-    "require": true
-  }
+  "unused": true
 }
