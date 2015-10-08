@@ -1,119 +1,122 @@
-/**
- * matched <https://github.com/jonschlinkert/matched>
- *
- * Copyright (c) 2014 Jon Schlinkert, contributors.
- * Licensed under the MIT license.
- */
-
 'use strict';
 
-var fs = require('fs');
 var path = require('path');
-var root = require('find-root');
-var glob = require('globby');
-var flatten = require('array-flatten');
-var differ = require('array-differ');
-var union = require('array-union');
-var unique = require('array-uniq');
-var normalize = require('normalize-path');
-var segments = require('path-segments');
-var parsePath = require('parse-filepath');
-var extend = require('xtend');
+var utils = require('./utils');
 
+module.exports = function (patterns, config, cb) {
+  if (typeof config === 'function') {
+    cb = config;
+    config = {};
+  }
 
-function resolve(cwd) {
-  return function(filepath) {
-    return normalize(path.resolve(cwd, filepath));
-  };
-}
+  if (typeof cb !== 'function') {
+    throw new Error('expected a callback function.');
+  }
 
-function listDirs(cwd) {
-  return fs.readdirSync(cwd).filter(function(filepath) {
-    filepath = path.join(cwd, filepath);
-    return fs.statSync(filepath).isDirectory();
-  }).map(resolve(cwd));
-}
+  if (!utils.isValidGlob(patterns)) {
+    cb(new Error('invalid glob pattern: ' + patterns));
+    return;
+  }
 
-var base = function(options) {
-  options = options || {};
-  var filepath = path.resolve(options.cwd || root());
-  return normalize(filepath);
+  // shallow clone options
+  var options = utils.extend({cwd: ''}, config);
+  options.cwd = cwd(options);
+  var sifted = siftPatterns(patterns, options);
+
+  function updateOptions(inclusive) {
+    return setIgnores(options, sifted.excludes, inclusive.index);
+  }
+
+  utils.reduce(sifted.includes, [], function (acc, include, next) {
+    var opts = updateOptions(include);
+
+    utils.glob(include.pattern, opts, function (err, files) {
+      if (err) return next(err);
+      next(null, acc.concat(files));
+    })
+  }, cb);
 };
 
-var arrayify = function(arr) {
-  return !Array.isArray(arr) ? [arr] : arr;
+module.exports.sync = function (patterns, config) {
+  if (!utils.isValidGlob(patterns)) {
+    throw new Error('invalid glob pattern: ' + patterns);
+  }
+
+  // shallow clone options
+  var options = utils.extend({cwd: ''}, config);
+  options.cwd = cwd(options);
+  var sifted = siftPatterns(patterns, options);
+
+  var len = sifted.includes.length, i = -1;
+  var res = [];
+
+  while (++i < len) {
+    var include = sifted.includes[i];
+    var opts = setIgnores(options, sifted.excludes, include.index);
+    res.push.apply(res, utils.glob.sync(include.pattern, opts));
+  }
+  return res;
 };
 
+function siftPatterns(patterns, opts) {
+  patterns = utils.arrayify(patterns);
 
-/**
- * ## filterDirs
- *
- * Return an array of directories except for exclusions.
- *
- * @param   {String} `base` The base directory to start from.
- * @param   {Object} `options`
- * @return  {Array}
- * @api private
- */
+  var res = { includes: [], excludes: [] };
+  var len = patterns.length, i = -1;
 
-var filterDirs = function(options) {
-  options = options || {};
-  var cwd = base(options);
+  while (++i < len) {
+    var stats = new Stats(patterns[i], i);
 
-  // list directories starting with the cwd
-  var dirs = listDirs(cwd).map(resolve(cwd));
-
-  // Omit folders from root directory
-  var rootOmit = ['.git', 'node_modules', 'temp', 'tmp'];
-  var rootDirs = union(rootOmit, arrayify(options.omit || []));
-  return differ(dirs, rootDirs.map(resolve(cwd)));
-};
-
-var splitPatterns = function(patterns) {
-  var arr = [];
-  patterns.forEach(function(pattern) {
-    var re = /^\*\*\//;
-    arr.push(pattern);
-    if (re.test(pattern)) {
-      arr.push(pattern.replace(re, ''));
+    if (opts.relative) {
+      stats.pattern = toRelative(stats.pattern, opts);
+      delete opts.cwd;
     }
-  });
-  return unique(arr);
-};
 
+    if (stats.isNegated) {
+      res.excludes.push(stats);
+    } else {
+      res.includes.push(stats);
+    }
+  }
+  return res;
+}
 
-module.exports = function matched(patterns, options) {
-  options = options || {};
-  var cwd = base(options);
-  var opts;
+function setIgnores(options, excludes, inclusiveIndex) {
+  var opts = utils.extend({}, options);
+  var negations = [];
 
-  var p = splitPatterns(arrayify(patterns));
+  var len = excludes.length, i = -1;
+  while (++i < len) {
+    var exclusion = excludes[i];
+    if (exclusion.index > inclusiveIndex) {
+      negations.push(exclusion.pattern);
+    }
+  }
+  opts.ignore = utils.arrayify(opts.ignore || []);
+  opts.ignore.push.apply(opts.ignore, negations);
+  return opts;
+}
 
-  return unique(flatten(filterDirs(options).reduce(function (acc, start) {
-    var normalized = p.map(function (pattern) {
-      var dir = start;
-      if (!/\*\*\//.test(pattern)) {
-        start = cwd;
-      }
-      if (/\{,/.test(pattern)) {
-        start = normalize(path.resolve(options.cwd || start));
-      }
+function Stats(pattern, i) {
+  this.index = i
+  this.isNegated = false;
+  this.pattern = pattern;
 
-      opts = extend({}, options, {
-        pattern: pattern,
-        cwd: start,
-        root: start
-      });
+  if (pattern.charAt(0) === '!') {
+    this.isNegated = true;
+    this.pattern = pattern.slice(1);
+  }
+}
 
-      // reset cwd;
-      start = dir;
-      return opts;
-    });
+function cwd(opts) {
+  if (/^\W/.test(opts.cwd)) {
+    return utils.resolve(opts.cwd);
+  }
+  return opts.cwd;
+}
 
-    return normalized.map(function(obj) {
-      opts = extend({}, {cwd: obj.cwd, srcBase: obj.srcBase, root: obj.root});
-      var result = glob.sync(obj.pattern, opts);
-      return result.map(resolve(opts.cwd));
-    });
-  }, [])));
-};
+function toRelative(pattern, opts) {
+  var fp = path.resolve(opts.cwd, pattern);
+  return path.relative(process.cwd(), fp);
+}
+
