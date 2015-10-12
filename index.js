@@ -22,6 +22,8 @@ module.exports = function (patterns, config, cb) {
   var options = utils.extend({cwd: ''}, config);
   options.cwd = cwd(options);
   var sifted = siftPatterns(patterns, options);
+  var Glob = utils.glob.Glob;
+  var glob;
 
   function updateOptions(inclusive) {
     return setIgnores(options, sifted.excludes, inclusive.index);
@@ -29,12 +31,22 @@ module.exports = function (patterns, config, cb) {
 
   utils.reduce(sifted.includes, [], function (acc, include, next) {
     var opts = updateOptions(include);
+    if (acc.glob) {
+      opts.cache = acc.glob.cache;
+    }
 
-    utils.glob(include.pattern, opts, function (err, files) {
+    glob = new Glob(include.pattern, opts, function (err, files) {
       if (err) return next(err);
-      next(null, acc.concat(files));
-    })
-  }, cb);
+
+      acc = acc.concat(files);
+      acc.glob = glob;
+      next(null, acc);
+    });
+  }, function(err, files) {
+    if (err) return cb(err);
+    delete files.glob;
+    cb(null, files);
+  });
 };
 
 module.exports.sync = function (patterns, config) {
@@ -46,38 +58,45 @@ module.exports.sync = function (patterns, config) {
   var options = utils.extend({cwd: ''}, config);
   options.cwd = cwd(options);
   var sifted = siftPatterns(patterns, options);
+  var Glob = utils.glob.Glob;
+  var glob;
 
   var len = sifted.includes.length, i = -1;
-  var res = [];
+  var files = [];
 
   while (++i < len) {
     var include = sifted.includes[i];
     var opts = setIgnores(options, sifted.excludes, include.index);
-    res.push.apply(res, utils.glob.sync(include.pattern, opts));
+    opts.sync = true;
+    if (glob && glob.cache) {
+      opts.cache = glob.cache;
+    }
+    glob = new Glob(include.pattern, opts);
+    files.push.apply(files, glob.found);
   }
-  return res;
+  return files;
 };
 
 function siftPatterns(patterns, opts) {
   patterns = utils.arrayify(patterns);
-
   var res = { includes: [], excludes: [] };
   var len = patterns.length, i = -1;
 
   while (++i < len) {
-    var stats = new Stats(patterns[i], i);
+    var stat = new Stat(patterns[i], opts, i);
 
     if (opts.relative) {
-      stats.pattern = toRelative(stats.pattern, opts);
+      stat.pattern = toRelative(stat.pattern, opts);
       delete opts.cwd;
     }
 
-    if (stats.isNegated) {
-      res.excludes.push(stats);
+    if (stat.isNegated) {
+      res.excludes.push(stat);
     } else {
-      res.includes.push(stats);
+      res.includes.push(stat);
     }
   }
+  res.stat = stat;
   return res;
 }
 
@@ -97,7 +116,7 @@ function setIgnores(options, excludes, inclusiveIndex) {
   return opts;
 }
 
-function Stats(pattern, i) {
+function Stat(pattern, opts, i) {
   this.index = i
   this.isNegated = false;
   this.pattern = pattern;

@@ -19,6 +19,14 @@ describe('glob', function () {
       });
     });
 
+    it('should support arrays of globs', function(done) {
+      glob(['*.js','*.json'], function(err, files) {
+        assert(!err);
+        assert(files);
+        done();
+      });
+    });
+
     it('should take options', function(done) {
       glob('*.txt', {cwd: 'test/fixtures'}, function(err, files) {
         assert(!err);
@@ -124,6 +132,13 @@ describe('glob', function () {
     it('should support globs as a string', function() {
       var files = glob.sync('*.js');
       assert(files);
+      assert(files.length);
+    });
+
+    it('should support arrays of globs', function() {
+      var files = glob.sync(['*.js', '*.json']);
+      assert(files);
+      assert(files.length);
     });
 
     it('should take options', function() {
