@@ -9,11 +9,11 @@
     "url": "https://github.com/jonschlinkert/matched/issues"
   },
   "license": "MIT",
-  "main": "index.js",
   "files": [
     "index.js",
     "utils.js"
   ],
+  "main": "index.js",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -31,7 +31,7 @@
     "gulp-jshint": "^1.11.2",
     "gulp-mocha": "^2.1.3",
     "jshint-stylish": "^2.0.1",
-    "mocha": "^2.3.3"
+    "mocha": "*"
   },
   "keywords": [
     "array",
@@ -72,9 +72,12 @@
     "related": {
       "list": [
         "is-glob",
-        "micromatch",
-        "look-up"
+        "look-up",
+        "micromatch"
       ]
-    }
+    },
+    "reflinks": [
+      "vinyl"
+    ]
   }
 }

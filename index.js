@@ -3,7 +3,7 @@
 var path = require('path');
 var utils = require('./utils');
 
-module.exports = function (patterns, config, cb) {
+module.exports = function(patterns, config, cb) {
   if (typeof config === 'function') {
     cb = config;
     config = {};
@@ -29,13 +29,13 @@ module.exports = function (patterns, config, cb) {
     return setIgnores(options, sifted.excludes, inclusive.index);
   }
 
-  utils.reduce(sifted.includes, [], function (acc, include, next) {
+  utils.reduce(sifted.includes, [], function(acc, include, next) {
     var opts = updateOptions(include);
     if (acc.glob) {
       opts.cache = acc.glob.cache;
     }
 
-    glob = new Glob(include.pattern, opts, function (err, files) {
+    glob = new Glob(include.pattern, opts, function(err, files) {
       if (err) return next(err);
 
       acc = acc.concat(files);
@@ -49,7 +49,7 @@ module.exports = function (patterns, config, cb) {
   });
 };
 
-module.exports.sync = function (patterns, config) {
+module.exports.sync = function(patterns, config) {
   if (!utils.isValidGlob(patterns)) {
     throw new Error('invalid glob pattern: ' + patterns);
   }
