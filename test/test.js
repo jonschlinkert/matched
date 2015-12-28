@@ -1,42 +1,44 @@
 'use strict';
 
 require('mocha');
+var fs = require('fs');
+var rimraf = require('rimraf');
 var assert = require('assert');
 var glob = require('..');
 
-describe('glob', function () {
-  describe('async', function () {
+describe('glob', function() {
+  describe('async', function() {
     it('should be a function', function() {
       assert(glob);
       assert(typeof glob === 'function');
     });
 
-    it('should support globs as a string', function(done) {
+    it('should support globs as a string', function(cb) {
       glob('*.js', function(err, files) {
         assert(!err);
         assert(files);
-        done();
+        cb();
       });
     });
 
-    it('should support arrays of globs', function(done) {
-      glob(['*.js','*.json'], function(err, files) {
+    it('should support arrays of globs', function(cb) {
+      glob(['*.js', '*.json'], function(err, files) {
         assert(!err);
         assert(files);
-        done();
+        cb();
       });
     });
 
-    it('should take options', function(done) {
+    it('should take options', function(cb) {
       glob('*.txt', {cwd: 'test/fixtures'}, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length);
-        done();
+        cb();
       });
     });
 
-    it('should return filepaths relative to process.cwd', function(done) {
+    it('should return filepaths relative to process.cwd', function(cb) {
       var opts = {cwd: 'test/fixtures', relative: true};
       glob('*.txt', opts, function(err, files) {
         assert(!err);
@@ -45,11 +47,11 @@ describe('glob', function () {
         assert(files[0] === 'test/fixtures/a.txt');
         assert(files[1] === 'test/fixtures/b.txt');
         assert(files[2] === 'test/fixtures/c.txt');
-        done();
+        cb();
       });
     });
 
-    it('should take ignore patterns', function(done) {
+    it('should take ignore patterns', function(cb) {
       var opts = {cwd: 'test/fixtures', ignore: ['*.js']};
       glob(['*.*'], opts, function(err, files) {
         assert(!err);
@@ -57,11 +59,11 @@ describe('glob', function () {
         assert(files.length);
         assert(~files.indexOf('a.md'));
         assert(!~files.indexOf('a.js'));
-        done();
+        cb();
       });
     });
 
-    it('should take negation patterns', function(done) {
+    it('should take negation patterns', function(cb) {
       var opts = {cwd: 'test/fixtures'};
       glob(['*.*', '!*.js'], opts, function(err, files) {
         assert(!err);
@@ -69,61 +71,61 @@ describe('glob', function () {
         assert(files.length);
         assert(~files.indexOf('a.md'));
         assert(!~files.indexOf('a.js'));
-        done();
+        cb();
       });
     });
 
-    it('should use ignore and negation patterns', function(done) {
+    it('should use ignore and negation patterns', function(cb) {
       glob(['*.js', '!gulpfile.js'], {ignore: ['utils.js']}, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length === 1);
         assert(files.indexOf('gulpfile.js') === -1);
-        done();
+        cb();
       });
     });
 
-    it('should expand tildes in cwd', function(done) {
+    it('should expand tildes in cwd', function(cb) {
       glob(['*'], {cwd: '~'}, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length > 0);
-        done();
+        cb();
       });
     });
 
-    it('should expand @ in cwd (global npm modules)', function(done) {
+    it('should expand @ in cwd (global npm modules)', function(cb) {
       glob(['*'], {cwd: '@'}, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length > 0);
-        done();
+        cb();
       });
     });
 
-    it('should pass an error in the callback if the glob is bad', function(done) {
+    it('should pass an error in the callback if the glob is bad', function(cb) {
       glob({}, {cwd: 'test/fixtures'}, function(err, files) {
         assert(err);
         assert(err.message);
         assert(err.message === 'invalid glob pattern: [object Object]');
-        done();
+        cb();
       });
     });
 
-    it('should throw an error if no callback is passed', function(done) {
+    it('should throw an error if no callback is passed', function(cb) {
       try {
         glob('abc');
-        done(new Error('expected an error'));
-      } catch(err) {
+        cb(new Error('expected an error'));
+      } catch (err) {
         assert(err);
         assert(err.message);
         assert(err.message === 'expected a callback function.');
-        done();
+        cb();
       }
     });
   });
 
-  describe('sync', function () {
+  describe('sync', function() {
     it('should expose a sync method', function() {
       assert(glob.sync);
       assert(typeof glob.sync === 'function');
@@ -147,15 +149,37 @@ describe('glob', function () {
       assert(files.length > 1);
     });
 
-    it('should throw an error if the glob is bad', function() {
+    it('should throw an error if the glob is bad', function(cb) {
       try {
         glob.sync({});
-        done(new Error('expected an error'));
-      } catch(err) {
+        cb(new Error('expected an error'));
+      } catch (err) {
         assert(err);
         assert(err.message);
         assert(err.message === 'invalid glob pattern: [object Object]');
+        cb();
       }
+    });
+  });
+
+  describe('promise:', function() {
+    beforeEach(function(cb) {
+      fs.writeFile('a.txt', 'This is a test.', function(err) {
+        if (err) return cb(err);
+        cb();
+      });
+    });
+
+    afterEach(function(cb) {
+      rimraf('a.txt', cb);
+    });
+
+    it('should glob files with `glob.promise`.', function(cb) {
+      glob.promise(['*.txt'])
+        .then(function(files) {
+          assert(files[0], 'a.txt');
+          cb();
+        });
     });
   });
 });
