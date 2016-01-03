@@ -24,7 +24,15 @@ describe('glob', function() {
     it('should support arrays of globs', function(cb) {
       glob(['*.js', '*.json'], function(err, files) {
         assert(!err);
-        assert(files);
+        assert(Array.isArray(files));
+        cb();
+      });
+    });
+
+    it('should expose non-emumerable files.cache array', function(cb) {
+      glob(['*.js', '*.json'], function(err, files) {
+        assert(!err);
+        assert(Array.isArray(files.cache));
         cb();
       });
     });
@@ -94,15 +102,6 @@ describe('glob', function() {
       });
     });
 
-    it('should expand @ in cwd (global npm modules)', function(cb) {
-      glob(['*'], {cwd: '@'}, function(err, files) {
-        assert(!err);
-        assert(files);
-        assert(files.length > 0);
-        cb();
-      });
-    });
-
     it('should pass an error in the callback if the glob is bad', function(cb) {
       glob({}, {cwd: 'test/fixtures'}, function(err, files) {
         assert(err);
@@ -143,6 +142,12 @@ describe('glob', function() {
       assert(files.length);
     });
 
+    it('should expose a non-emumerable `cache` property', function() {
+      var files = glob.sync(['*.js', '*.json', 'lib/**/*.*']);
+      assert(files.cache);
+      assert(Array.isArray(files.cache));
+    });
+
     it('should take options', function() {
       var files = glob.sync('*.txt', {cwd: 'test/fixtures'});
       assert(files);
@@ -177,7 +182,15 @@ describe('glob', function() {
     it('should glob files with `glob.promise`.', function(cb) {
       glob.promise(['*.txt'])
         .then(function(files) {
-          assert(files[0], 'a.txt');
+          assert.equal(files[0], 'a.txt');
+          cb();
+        });
+    });
+
+    it('should expose a `files.cache` array', function(cb) {
+      glob.promise(['*.txt'])
+        .then(function(files) {
+          assert(Array.isArray(files.cache));
           cb();
         });
     });
