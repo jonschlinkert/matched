@@ -2,6 +2,7 @@
 
 require('mocha');
 var fs = require('fs');
+var path = require('path');
 var rimraf = require('rimraf');
 var assert = require('assert');
 var glob = require('..');
@@ -21,10 +22,28 @@ describe('glob', function() {
       });
     });
 
+    it('should support non-globs as a string', function(cb) {
+      glob('fixtures/a.js', {cwd: __dirname}, function(err, files) {
+        assert(!err);
+        assert(files);
+        assert(files.length);
+        cb();
+      });
+    });
+
     it('should support arrays of globs', function(cb) {
       glob(['*.js', '*.json'], function(err, files) {
         assert(!err);
         assert(Array.isArray(files));
+        cb();
+      });
+    });
+
+    it('should support arrays of non-globs', function(cb) {
+      glob(['a.js', 'a.md'], {cwd: path.resolve(__dirname, 'fixtures')}, function(err, files) {
+        assert(!err);
+        assert(Array.isArray(files));
+        assert(files.length);
         cb();
       });
     });
