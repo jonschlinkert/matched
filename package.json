@@ -11,30 +11,35 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "lib/"
+    "lib",
+    "LICENSE",
+    "README.md"
   ],
   "main": "index.js",
   "engines": {
     "node": ">= 0.10.0"
   },
   "dependencies": {
-    "arr-union": "^3.0.0",
+    "arr-union": "^3.1.0",
     "async-array-reduce": "^0.1.0",
-    "bluebird": "^3.1.1",
+    "bluebird": "^3.4.1",
     "extend-shallow": "^2.0.1",
-    "glob": "^6.0.3",
+    "fs-exists-sync": "^0.1.0",
+    "glob": "^7.0.5",
+    "has-glob": "^0.1.1",
     "is-valid-glob": "^0.3.0",
-    "lazy-cache": "^1.0.3",
+    "lazy-cache": "^2.0.1",
     "resolve-dir": "^0.1.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
-    "gulp-eslint": "^1.1.1",
-    "gulp-format-md": "^0.1.4",
-    "gulp-istanbul": "^0.10.3",
+    "glob-stream": "^5.3.2",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^2.0.0",
+    "gulp-format-md": "^0.1.9",
+    "gulp-istanbul": "^1.0.0",
     "gulp-mocha": "^2.2.0",
-    "mocha": "^2.3.4",
-    "rimraf": "^2.5.0"
+    "mocha": "^2.5.3",
+    "rimraf": "^2.5.2"
   },
   "keywords": [
     "array",
@@ -55,6 +60,7 @@
     "globstar",
     "lookup",
     "match",
+    "matched",
     "matcher",
     "matching",
     "minimatch",
@@ -72,6 +78,14 @@
     "wildcards"
   ],
   "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
     "related": {
       "list": [
         "is-glob",
@@ -80,11 +94,13 @@
       ]
     },
     "reflinks": [
+      "glob-stream",
+      "verb",
+      "verb-readme-generator",
       "vinyl"
     ],
-    "layout": "default",
-    "plugins": [
-      "gulp-format-md"
-    ]
+    "lint": {
+      "reflinks": true
+    }
   }
 }
