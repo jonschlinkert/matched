@@ -22,7 +22,6 @@
   "dependencies": {
     "arr-union": "^3.1.0",
     "async-array-reduce": "^0.1.0",
-    "bluebird": "^3.4.1",
     "extend-shallow": "^2.0.1",
     "fs-exists-sync": "^0.1.0",
     "glob": "^7.0.5",
