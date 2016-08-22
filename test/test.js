@@ -141,6 +141,18 @@ describe('glob', function() {
         cb();
       }
     });
+
+    it('should return absolute paths with realpath: true for non-glob', function(cb) {
+      glob('gulpfile.js', { realpath: true }, function(err, files) {
+        assert(!err);
+        assert(files);
+        assert(files.length);
+        files.forEach(function(file) {
+          assert.equal(file, path.resolve(file));
+        });
+        cb();
+      });
+    });
   });
 
   describe('sync', function() {
@@ -183,6 +195,16 @@ describe('glob', function() {
         assert(err.message === 'invalid glob pattern: [object Object]');
         cb();
       }
+    });
+
+    it('should return absolute paths with realpath: true for non-glob', function(cb) {
+      var files = glob.sync('gulpfile.js', { realpath: true });
+      assert(files);
+      assert(files.length);
+      files.forEach(function(file) {
+        assert.equal(file, path.resolve(file));
+      });
+      cb();
     });
   });
 
