@@ -6,5 +6,6 @@ temp
 TODO.md
 
 *.sublime-*
+.nyc_output
 coverage
 vendor

@@ -11,17 +11,16 @@
   "license": "MIT",
   "files": [
     "index.js",
-    "lib",
-    "LICENSE",
-    "README.md"
+    "lib"
   ],
   "main": "index.js",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">= 0.12.0"
   },
   "scripts": {
-    "test": "gulp mocha",
-    "posttest": "gulp eslint"
+    "report": "nyc report --reporter=html",
+    "test": "nyc mocha test/*.js",
+    "posttest": "eslint *.js test/*.js lib/*.js"
   },
   "dependencies": {
     "arr-union": "^3.1.0",
@@ -35,13 +34,9 @@
     "resolve-dir": "^0.1.0"
   },
   "devDependencies": {
-    "glob-stream": "^5.3.2",
-    "gulp": "^3.9.1",
-    "gulp-eslint": "^2.0.0",
-    "gulp-format-md": "^0.1.9",
-    "gulp-istanbul": "^1.0.0",
-    "gulp-mocha": "^2.2.0",
+    "eslint": "^2.13.1",
     "mocha": "^2.5.3",
+    "nyc": "^8.1.0",
     "rimraf": "^2.5.2"
   },
   "keywords": [

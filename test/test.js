@@ -103,11 +103,9 @@ describe('glob', function() {
     });
 
     it('should use ignore and negation patterns', function(cb) {
-      glob(['*.js', '!gulpfile.js'], {ignore: ['utils.js']}, function(err, files) {
+      glob(['lib/*.js', '!lib/sync.js'], {ignore: ['lib/utils.js']}, function(err, files) {
         assert(!err);
-        assert(files);
-        assert(files.length === 1);
-        assert(files.indexOf('gulpfile.js') === -1);
+        assert.deepEqual(files, ['lib/async.js', 'lib/promise.js']);
         cb();
       });
     });
@@ -143,7 +141,7 @@ describe('glob', function() {
     });
 
     it('should return absolute paths with realpath: true for non-glob', function(cb) {
-      glob('gulpfile.js', { realpath: true }, function(err, files) {
+      glob('index.js', { realpath: true }, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length);
@@ -198,7 +196,7 @@ describe('glob', function() {
     });
 
     it('should return absolute paths with realpath: true for non-glob', function(cb) {
-      var files = glob.sync('gulpfile.js', { realpath: true });
+      var files = glob.sync('index.js', { realpath: true });
       assert(files);
       assert(files.length);
       files.forEach(function(file) {
