@@ -4,6 +4,10 @@
   "version": "0.4.4",
   "homepage": "https://github.com/jonschlinkert/matched",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "contributors": [
+    "Bogdan Chadkin (https://github.com/TrySound)",
+    "Jon Schlinkert (http://twitter.com/jonschlinkert)"
+  ],
   "repository": "jonschlinkert/matched",
   "bugs": {
     "url": "https://github.com/jonschlinkert/matched/issues"
