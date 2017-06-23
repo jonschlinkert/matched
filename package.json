@@ -35,8 +35,10 @@
     "resolve-dir": "^1.0.0"
   },
   "devDependencies": {
+    "eslint": "^4.0.0",
     "gulp-format-md": "^0.1.12",
     "mocha": "^3.0.2",
+    "nyc": "^11.0.2",
     "rimraf": "^2.5.2"
   },
   "keywords": [
