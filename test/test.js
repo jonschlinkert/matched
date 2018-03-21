@@ -11,7 +11,7 @@ describe('glob', function() {
   describe('async', function() {
     it('should be a function', function() {
       assert(glob);
-      assert(typeof glob === 'function');
+      assert.equal(typeof glob, 'function');
     });
 
     it('should support globs as a string', function(cb) {
@@ -71,9 +71,9 @@ describe('glob', function() {
         assert(!err);
         assert(files);
         assert(files.length);
-        assert(files[0] === 'test/fixtures/a.txt');
-        assert(files[1] === 'test/fixtures/b.txt');
-        assert(files[2] === 'test/fixtures/c.txt');
+        assert.equal(files[0], 'test/fixtures/a.txt');
+        assert.equal(files[1], 'test/fixtures/b.txt');
+        assert.equal(files[2], 'test/fixtures/c.txt');
         cb();
       });
     });
@@ -103,15 +103,17 @@ describe('glob', function() {
     });
 
     it('should use ignore and negation patterns', function(cb) {
-      glob(['lib/*.js', '!lib/sync.js'], {ignore: ['lib/utils.js']}, function(err, files) {
+      glob(['*.js', '!gulpfile.js'], {ignore: ['utils.js']}, function(err, files) {
         assert(!err);
-        assert.deepEqual(files, ['lib/async.js', 'lib/promise.js']);
+        assert(files);
+        assert.equal(files.length, 1);
+        assert.equal(files.indexOf('gulpfile.js'), -1);
         cb();
       });
     });
 
     it('should expand tildes in cwd', function(cb) {
-      glob(['*'], {cwd: '~'}, function(err, files) {
+      glob(['*'], { cwd: '~' }, function(err, files) {
         assert(!err);
         assert(files);
         assert(files.length > 0);
@@ -119,44 +121,25 @@ describe('glob', function() {
       });
     });
 
-    it('should pass an error in the callback if the glob is bad', function(cb) {
-      glob({}, {cwd: 'test/fixtures'}, function(err, files) {
+    it('should error if the glob is invalid', function(cb) {
+      glob({}, { cwd: 'test/fixtures' }, function(err, files) {
         assert(err);
         assert(err.message);
-        assert(err.message === 'invalid glob pattern: [object Object]');
+        assert.equal(err.message, 'invalid glob pattern: [object Object]');
         cb();
       });
     });
 
-    it('should throw an error if no callback is passed', function(cb) {
-      try {
-        glob('abc');
-        cb(new Error('expected an error'));
-      } catch (err) {
-        assert(err);
-        assert(err.message);
-        assert(err.message === 'expected a callback function.');
-        cb();
-      }
-    });
-
-    it('should return absolute paths with realpath: true for non-glob', function(cb) {
-      glob('index.js', { realpath: true }, function(err, files) {
-        assert(!err);
-        assert(files);
-        assert(files.length);
-        files.forEach(function(file) {
-          assert.equal(file, path.resolve(file));
-        });
-        cb();
-      });
+    it('should return a promise if no callback is passed', async function() {
+      const files = await glob('*.js', { cwd: path.join(__dirname, 'fixtures')});
+      assert(files.length >= 1);
     });
   });
 
   describe('sync', function() {
     it('should expose a sync method', function() {
       assert(glob.sync);
-      assert(typeof glob.sync === 'function');
+      assert.equal(typeof glob.sync, 'function');
     });
 
     it('should support globs as a string', function() {
@@ -183,26 +166,8 @@ describe('glob', function() {
       assert(files.length > 1);
     });
 
-    it('should throw an error if the glob is bad', function(cb) {
-      try {
-        glob.sync({});
-        cb(new Error('expected an error'));
-      } catch (err) {
-        assert(err);
-        assert(err.message);
-        assert(err.message === 'invalid glob pattern: [object Object]');
-        cb();
-      }
-    });
-
-    it('should return absolute paths with realpath: true for non-glob', function(cb) {
-      var files = glob.sync('index.js', { realpath: true });
-      assert(files);
-      assert(files.length);
-      files.forEach(function(file) {
-        assert.equal(file, path.resolve(file));
-      });
-      cb();
+    it('should throw an error if the glob is bad', function() {
+      assert.throws(() => glob.sync({}), /invalid glob/);
     });
   });
 
@@ -218,12 +183,9 @@ describe('glob', function() {
       rimraf('a.txt', cb);
     });
 
-    it('should glob files with `glob.promise`.', function(cb) {
-      glob.promise(['*.txt'])
-        .then(function(files) {
-          assert.equal(files[0], 'a.txt');
-          cb();
-        });
+    it('should glob files with `glob.promise`.', async function() {
+      const files = await glob.promise(['*.txt']);
+      assert.equal(files[0], 'a.txt');
     });
 
     it('should expose a `files.cache` array', function(cb) {
