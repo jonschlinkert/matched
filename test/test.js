@@ -1,11 +1,11 @@
 'use strict';
 
 require('mocha');
-var fs = require('fs');
-var path = require('path');
-var rimraf = require('rimraf');
-var assert = require('assert');
-var glob = require('..');
+const fs = require('fs');
+const path = require('path');
+const rimraf = require('rimraf');
+const assert = require('assert');
+const glob = require('..');
 
 describe('glob', () => {
   describe('async', () => {
@@ -58,7 +58,7 @@ describe('glob', () => {
     });
 
     it('should return filepaths relative to process.cwd', cb => {
-      var opts = {cwd: 'test/fixtures', relative: true};
+      let opts = {cwd: 'test/fixtures', relative: true};
       glob('*.txt', opts, (err, files) => {
         assert(!err);
         assert(files);
@@ -71,7 +71,7 @@ describe('glob', () => {
     });
 
     it('should take ignore patterns', cb => {
-      var opts = {cwd: 'test/fixtures', ignore: ['*.js']};
+      let opts = {cwd: 'test/fixtures', ignore: ['*.js']};
       glob(['*.*'], opts, (err, files) => {
         assert(!err);
         assert(files);
@@ -83,7 +83,7 @@ describe('glob', () => {
     });
 
     it('should take negation patterns', cb => {
-      var opts = {cwd: 'test/fixtures'};
+      let opts = {cwd: 'test/fixtures'};
       glob(['*.*', '!*.js'], opts, (err, files) => {
         assert(!err);
         assert(files);
@@ -135,19 +135,19 @@ describe('glob', () => {
     });
 
     it('should support globs as a string', () => {
-      var files = glob.sync('*.js');
+      let files = glob.sync('*.js');
       assert(files);
       assert(files.length);
     });
 
     it('should support arrays of globs', () => {
-      var files = glob.sync(['*.js', '*.json']);
+      let files = glob.sync(['*.js', '*.json']);
       assert(files);
       assert(files.length);
     });
 
     it('should take options', () => {
-      var files = glob.sync('*.txt', {cwd: 'test/fixtures'});
+      let files = glob.sync('*.txt', {cwd: 'test/fixtures'});
       assert(files);
       assert(files.length > 1);
     });
@@ -159,10 +159,7 @@ describe('glob', () => {
 
   describe('promise:', () => {
     beforeEach(cb => {
-      fs.writeFile('a.txt', 'This is a test.', err => {
-        if (err) return cb(err);
-        cb();
-      });
+      fs.writeFile('a.txt', 'temp', cb);
     });
 
     afterEach(cb => {
@@ -170,7 +167,7 @@ describe('glob', () => {
     });
 
     it('should glob files with `glob.promise`.', async() => {
-      const files = await glob.promise(['*.txt']);
+      const files = await glob(['*.txt']);
       assert.equal(files[0], 'a.txt');
     });
   });
