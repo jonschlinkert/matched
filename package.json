@@ -1,7 +1,7 @@
 {
   "name": "matched",
   "description": "Adds array support to node-glob, sync and async. Also supports tilde expansion (user home) and resolving to global npm modules.",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "homepage": "https://github.com/jonschlinkert/matched",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "contributors": [
@@ -92,6 +92,10 @@
     },
     "lint": {
       "reflinks": true
-    }
+    },
+    "reflinks": [
+      "glob",
+      "picomatch"
+    ]
   }
 }
