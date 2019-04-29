@@ -23,7 +23,7 @@ describe('glob', () => {
     });
 
     it('should support non-globs as a string', cb => {
-      glob('fixtures/a.js', {cwd: __dirname}, (err, files) => {
+      glob('fixtures/a.js', { cwd: __dirname }, (err, files) => {
         assert(!err);
         assert(files);
         assert(files.length);
@@ -40,7 +40,7 @@ describe('glob', () => {
     });
 
     it('should support arrays of non-globs', cb => {
-      glob(['a.js', 'a.md'], {cwd: path.resolve(__dirname, 'fixtures')}, (err, files) => {
+      glob(['a.js', 'a.md'], { cwd: path.resolve(__dirname, 'fixtures') }, (err, files) => {
         assert(!err);
         assert(Array.isArray(files));
         assert(files.length);
@@ -49,7 +49,7 @@ describe('glob', () => {
     });
 
     it('should take options', cb => {
-      glob('*.txt', {cwd: 'test/fixtures'}, (err, files) => {
+      glob('*.txt', { cwd: 'test/fixtures' }, (err, files) => {
         assert(!err);
         assert(files);
         assert(files.length);
@@ -58,7 +58,7 @@ describe('glob', () => {
     });
 
     it('should return filepaths relative to process.cwd', cb => {
-      let opts = {cwd: 'test/fixtures', relative: true};
+      let opts = { cwd: 'test/fixtures', relative: true };
       glob('*.txt', opts, (err, files) => {
         assert(!err);
         assert(files);
@@ -71,8 +71,7 @@ describe('glob', () => {
     });
 
     it('should take ignore patterns', cb => {
-      let opts = {cwd: 'test/fixtures', ignore: ['*.js']};
-      glob(['*.*'], opts, (err, files) => {
+      glob(['*.*'], { cwd: 'test/fixtures', ignore: ['*.js'] }, (err, files) => {
         assert(!err);
         assert(files);
         assert(files.length);
@@ -83,7 +82,7 @@ describe('glob', () => {
     });
 
     it('should take negation patterns', cb => {
-      let opts = {cwd: 'test/fixtures'};
+      let opts = { cwd: 'test/fixtures' };
       glob(['*.*', '!*.js'], opts, (err, files) => {
         assert(!err);
         assert(files);
@@ -106,7 +105,22 @@ describe('glob', () => {
 
     it('should expand tildes in cwd', cb => {
       glob(['*'], { cwd: '~' }, (err, files) => {
-        assert(!err);
+        if (err) {
+          cb(err);
+          return;
+        }
+        assert(files);
+        assert(files.length > 0);
+        cb();
+      });
+    });
+
+    it.only('should return the pattern when nonull is set', cb => {
+      glob(['*'], { cwd: '~', nonull: true }, (err, files) => {
+        if (err) {
+          cb(err);
+          return;
+        }
         assert(files);
         assert(files.length > 0);
         cb();
@@ -123,7 +137,7 @@ describe('glob', () => {
     });
 
     it('should return a promise if no callback is passed', async() => {
-      const files = await glob('*.js', { cwd: path.join(__dirname, 'fixtures')});
+      const files = await glob('*.js', { cwd: path.join(__dirname, 'fixtures') });
       assert(files.length >= 1);
     });
   });
@@ -146,8 +160,14 @@ describe('glob', () => {
       assert(files.length);
     });
 
+    it('should work when globs are prefixed with path parts', () => {
+      let files = glob.sync(['fixtures/*.js', 'fixtures/*.txt'], { cwd: __dirname });
+      assert(files);
+      assert(files.length);
+    });
+
     it('should take options', () => {
-      let files = glob.sync('*.txt', {cwd: 'test/fixtures'});
+      let files = glob.sync('*.txt', { cwd: 'test/fixtures' });
       assert(files);
       assert(files.length > 1);
     });

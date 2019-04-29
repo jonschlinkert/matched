@@ -1,4 +1,4 @@
-# matched [![NPM version](https://img.shields.io/npm/v/matched.svg?style=flat)](https://www.npmjs.com/package/matched) [![NPM monthly downloads](https://img.shields.io/npm/dm/matched.svg?style=flat)](https://npmjs.org/package/matched) [![NPM total downloads](https://img.shields.io/npm/dt/matched.svg?style=flat)](https://npmjs.org/package/matched) [![Linux Build Status](https://img.shields.io/travis/jonschlinkert/matched.svg?style=flat&label=Travis)](https://travis-ci.org/jonschlinkert/matched)
+# matched [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W8YFZ425KND68) [![NPM version](https://img.shields.io/npm/v/matched.svg?style=flat)](https://www.npmjs.com/package/matched) [![NPM monthly downloads](https://img.shields.io/npm/dm/matched.svg?style=flat)](https://npmjs.org/package/matched) [![NPM total downloads](https://img.shields.io/npm/dt/matched.svg?style=flat)](https://npmjs.org/package/matched) [![Linux Build Status](https://img.shields.io/travis/jonschlinkert/matched.svg?style=flat&label=Travis)](https://travis-ci.org/jonschlinkert/matched)
 
 > Adds array support to node-glob, sync and async. Also supports tilde expansion (user home) and resolving to global npm modules.
 
@@ -64,9 +64,14 @@ let files = glob.sync(['*.js']);
 All methods take an options object to be forwarded to [node-glob](https://github.com/isaacs/node-glob) as the second argument.
 
 ```js
-const glob = glob(['*.js'], { cwd: 'test' });
+let files = glob(['*.js'], { cwd: 'test' });
+console.log(files);
 //=> ['test.js']
 ```
+
+## v4.0
+
+* Use [picomatch](https://github.com/micromatch/picomatch) for parsing glob patterns.
 
 ## v3.0
 
@@ -114,17 +119,17 @@ $ npm install -g verbose/verb#dev verb-generate-readme && verb
 
 You might also be interested in these projects:
 
-* [findup-sync](https://www.npmjs.com/package/findup-sync): Find the first file matching a given pattern in the current directory or the nearest… [more](https://github.com/js-cli/node-findup-sync#readme) | [homepage](https://github.com/js-cli/node-findup-sync#readme "Find the first file matching a given pattern in the current directory or the nearest ancestor directory.")
-* [is-glob](https://www.npmjs.com/package/is-glob): Returns `true` if the given string looks like a glob pattern or an extglob pattern… [more](https://github.com/jonschlinkert/is-glob) | [homepage](https://github.com/jonschlinkert/is-glob "Returns `true` if the given string looks like a glob pattern or an extglob pattern. This makes it easy to create code that only uses external modules like node-glob when necessary, resulting in much faster code execution and initialization time, and a bet")
-* [micromatch](https://www.npmjs.com/package/micromatch): Glob matching for javascript/node.js. A drop-in replacement and faster alternative to minimatch and multimatch. | [homepage](https://github.com/micromatch/micromatch "Glob matching for javascript/node.js. A drop-in replacement and faster alternative to minimatch and multimatch.")
+* [findup-sync](https://www.npmjs.com/package/findup-sync): Find the first file matching a given pattern in the current directory or the nearest… [more](https://github.com/gulpjs/findup-sync#readme) | [homepage](https://github.com/gulpjs/findup-sync#readme "Find the first file matching a given pattern in the current directory or the nearest ancestor directory.")
+* [is-glob](https://www.npmjs.com/package/is-glob): Returns `true` if the given string looks like a glob pattern or an extglob pattern… [more](https://github.com/micromatch/is-glob) | [homepage](https://github.com/micromatch/is-glob "Returns `true` if the given string looks like a glob pattern or an extglob pattern. This makes it easy to create code that only uses external modules like node-glob when necessary, resulting in much faster code execution and initialization time, and a bet")
+* [micromatch](https://www.npmjs.com/package/micromatch): Glob matching for javascript/node.js. A replacement and faster alternative to minimatch and multimatch. | [homepage](https://github.com/micromatch/micromatch "Glob matching for javascript/node.js. A replacement and faster alternative to minimatch and multimatch.")
 
 ### Contributors
 
-| **Commits** | **Contributor** | 
-| --- | --- |
-| 62 | [jonschlinkert](https://github.com/jonschlinkert) |
-| 8 | [TrySound](https://github.com/TrySound) |
-| 1 | [sindresorhus](https://github.com/sindresorhus) |
+| **Commits** | **Contributor** |  
+| --- | --- |  
+| 68 | [jonschlinkert](https://github.com/jonschlinkert) |  
+| 8  | [TrySound](https://github.com/TrySound) |  
+| 1  | [sindresorhus](https://github.com/sindresorhus) |  
 
 ### Author
 
@@ -136,9 +141,9 @@ You might also be interested in these projects:
 
 ### License
 
-Copyright © 2018, [Jon Schlinkert](https://github.com/jonschlinkert).
+Copyright © 2019, [Jon Schlinkert](https://github.com/jonschlinkert).
 Released under the [MIT License](LICENSE).
 
 ***
 
-_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.6.0, on August 27, 2018._
+_This file was generated by [verb-generate-readme](https://github.com/verbose/verb-generate-readme), v0.8.0, on April 29, 2019._
