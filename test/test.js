@@ -104,18 +104,6 @@ describe('glob', () => {
     });
 
     it('should expand tildes in cwd', cb => {
-      glob(['*'], { cwd: '~' }, (err, files) => {
-        if (err) {
-          cb(err);
-          return;
-        }
-        assert(files);
-        assert(files.length > 0);
-        cb();
-      });
-    });
-
-    it.only('should return the pattern when nonull is set', cb => {
       glob(['*'], { cwd: '~', nonull: true }, (err, files) => {
         if (err) {
           cb(err);
