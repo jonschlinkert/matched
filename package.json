@@ -8,6 +8,7 @@
     "Bogdan Chadkin (https://github.com/TrySound)",
     "Jon Schlinkert (http://twitter.com/jonschlinkert)"
   ],
+  "funding": "https://github.com/sponsors/jonschlinkert",
   "repository": "jonschlinkert/matched",
   "bugs": {
     "url": "https://github.com/jonschlinkert/matched/issues"
@@ -28,8 +29,8 @@
     "posttest": "eslint *.js test/*.js lib/*.js"
   },
   "dependencies": {
-    "glob": "^7.1.3",
-    "picomatch": "^2.0.5"
+    "glob": "^7.1.6",
+    "picomatch": "^2.2.1"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
