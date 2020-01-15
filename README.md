@@ -6,7 +6,7 @@ Please consider following this project's author, [Jon Schlinkert](https://github
 
 ## Install
 
-Install with [npm](https://www.npmjs.com/) (requires [Node.js](https://nodejs.org/en/) >=8):
+Install with [npm](https://www.npmjs.com/) (requires [Node.js](https://nodejs.org/en/) >=12):
 
 ```sh
 $ npm install --save matched
@@ -71,7 +71,8 @@ console.log(files);
 
 ## v4.1
 
-* Added support for `options.onGlob()` to allow the user to get the files returned by each glob pattern.
+* Adds support for `options.onMatch()` which is passed to [node-glob](https://github.com/isaacs/node-glob) as a listener for the `match` event.
+* Adds support for `options.onFiles()` to allow the user to get the files returned by each glob pattern.
 * Small optimizations in logic for handling non-glob patterns that are passed for matching literal file names.
 
 ## v4.0
