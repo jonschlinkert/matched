@@ -69,7 +69,7 @@ console.log(files);
 //=> ['test.js']
 ```
 
-## v4.1
+## v5.0
 
 * Adds support for `options.onMatch()` which is passed to [node-glob](https://github.com/isaacs/node-glob) as a listener for the `match` event.
 * Adds support for `options.onFiles()` to allow the user to get the files returned by each glob pattern.
